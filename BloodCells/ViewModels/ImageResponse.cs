@@ -2,6 +2,7 @@
 {
     public class ImageResponse
     {
-        public string Url { get; set; }
+        public string Original { get; set; }
+        public string Edit { get; set; }
     }
 }

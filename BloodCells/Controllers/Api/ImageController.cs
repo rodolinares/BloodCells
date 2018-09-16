@@ -30,7 +30,8 @@ namespace BloodCells.Controllers.Api
                 var bmp = new Bitmap(ms);
 
                 Directory.CreateDirectory(_input);
-                bmp.Save(Path.Combine(_input, "test.bmp"));
+                var inputName = Guid.NewGuid();
+                bmp.Save(Path.Combine(_input, $"{inputName}.jpg"));
 
                 var image = new Image<Bgr, byte>(bmp);
                 var hsv = image.Convert<Hsv, byte>();
@@ -49,11 +50,13 @@ namespace BloodCells.Controllers.Api
                 }
 
                 Directory.CreateDirectory(_output);
-                edit.Save(Path.Combine(_output, "test.bmp"));
+                var outputName = Guid.NewGuid();
+                edit.Save(Path.Combine(_output, $"{outputName}.jpg"));
 
                 var ir = new ImageResponse
                 {
-                    Url = ""
+                    Original = Url.Content($"~/Content/Images/Input/{inputName}.jpg"),
+                    Edit = Url.Content($"~/Content/Images/Output/{outputName}.jpg")
                 };
 
                 return Ok(ir);
