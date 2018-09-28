@@ -69,15 +69,15 @@ namespace BloodCells.Controllers.Api
 
         private Image<Gray, byte> FilterBigCells(Image<Hsv, byte> image)
         {
-            var lower = new Hsv(90, 80, 160);
-            var higher = new Hsv(150, 140, 255);
+            //var lower = new Hsv(90, 80, 160);
+            //var higher = new Hsv(150, 140, 255);
 
-            //var lower = new Image<Bgr, byte>(HttpContext.Current.Server.MapPath("~/App_Data/low.jpg"))
-            //    .Convert<Hsv, byte>()[0, 0];
-            //var higher = new Image<Bgr, byte>(HttpContext.Current.Server.MapPath("~/App_Data/high.jpg"))
-            //    .Convert<Hsv, byte>()[0, 0];
+            var lower = new Image<Bgr, byte>(HttpContext.Current.Server.MapPath("~/App_Data/low.jpg"))
+                .Convert<Hsv, byte>()[0, 0];
+            var higher = new Image<Bgr, byte>(HttpContext.Current.Server.MapPath("~/App_Data/high.jpg"))
+                .Convert<Hsv, byte>()[0, 0];
 
-            return image.InRange(lower, higher);
+            return image.InRange(new Hsv(lower.Hue - 10, 100, 100), new Hsv(higher.Hue + 10, 255, 255));
         }
     }
 }
