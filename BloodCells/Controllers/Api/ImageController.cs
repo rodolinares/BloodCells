@@ -44,7 +44,7 @@ namespace BloodCells.Controllers.Api
                     {
                         if (mask[i, j].Intensity == 255)
                         {
-                            edit[i, j] = new Bgr(50, 50, 50);
+                            edit[i, j] = new Bgr(70, 115, 33);
                         }
                     }
                 }
