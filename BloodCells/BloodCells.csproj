@@ -110,7 +110,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\colors.png" />
+    <Content Include="App_Data\bloodcellhaar.xml" />
     <Content Include="App_Data\high.jpg" />
     <Content Include="App_Data\low.jpg" />
     <Content Include="Content\bootstrap.css" />

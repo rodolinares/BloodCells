@@ -15,6 +15,9 @@ namespace BloodCells.Controllers.Api
         private readonly string _input = HttpContext.Current.Server.MapPath("~/Content/Images/Input");
         private readonly string _output = HttpContext.Current.Server.MapPath("~/Content/Images/Output");
 
+        private CascadeClassifier _classifier =
+            new CascadeClassifier(HttpContext.Current.Server.MapPath("~/App_Data/bloodcellhaar.xml"));
+
         [ResponseType(typeof(ImageView))]
         public IHttpActionResult PostImage(ImageView iv)
         {
@@ -34,19 +37,33 @@ namespace BloodCells.Controllers.Api
                 bmp.Save(Path.Combine(_input, $"{inputName}.jpg"));
 
                 var image = new Image<Bgr, byte>(bmp);
+                var gray = image.Convert<Gray, byte>();
                 var hsv = image.Convert<Hsv, byte>();
                 var mask = FilterBigCells(hsv);
                 var edit = image.Clone();
 
-                for (int i = 0; i < mask.Rows; i++)
+                var cells = _classifier.DetectMultiScale(gray);
+
+                foreach (var cell in cells)
                 {
-                    for (int j = 0; j < mask.Cols; j++)
+                    //var detected = false;
+
+                    for (int i = cell.X; i < cell.Width + cell.X; i++)
                     {
-                        if (mask[i, j].Intensity == 255)
+                        for (int j = cell.Y; j < cell.Height + cell.Y; j++)
                         {
-                            edit[i, j] = new Bgr(70, 115, 33);
+                            if (mask[j, i].Intensity == 255)
+                            {
+                                edit[j, i] = new Bgr(70, 115, 33);
+                                //detected = true;
+                            }
                         }
                     }
+
+                    //if (detected)
+                    //{
+                    //    edit.Draw(cell, new Bgr(0, 0, 0));
+                    //}
                 }
 
                 Directory.CreateDirectory(_output);
@@ -61,9 +78,9 @@ namespace BloodCells.Controllers.Api
 
                 return Ok(ir);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                return InternalServerError();
+                return InternalServerError(exception);
             }
         }
 
